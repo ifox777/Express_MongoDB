@@ -1,6 +1,7 @@
 import express from 'express'
 import path from 'path';
 import csrf from 'csurf';
+import flash from 'connect-flash';
 import exphbs from 'express-handlebars'
 import session from 'express-session'
 import  {default as connectMongo} from 'connect-mongodb-session'
@@ -11,7 +12,6 @@ import {routerCard} from "./routes/card.js";
 import {routerOrders} from "./routes/orders.js";
 import {routerAuth} from "./routes/auth.js";
 import mongoose from 'mongoose';
-import {User} from "./models/user.js";
 import {varMiddleware} from "./middleware/variables.js";
 import {userMiddleware} from "./middleware/user.js";
 
@@ -65,6 +65,7 @@ app.use(session({
     store: store,
 }),)
 app.use(csrf())
+app.use(flash())
 app.use(varMiddleware)
 app.use(userMiddleware)
 
