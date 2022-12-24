@@ -31,9 +31,14 @@ if ($card) {
     $card.addEventListener('click', event => {
       if (event.target.classList.contains('js-remove')) {
           const id = event.target.dataset.id
+          const csrf = event.target.dataset.csrf
 
           fetch('/card/remove/' + id, {
-              method: 'delete'
+              method: 'delete',
+              headers: {
+                  'X-XSRF-TOKEN': csrf
+              },
+
           }).then(res => res.json())     //тут какая-то залупа
               .then(card => {
                   if (card.courses.length) {
