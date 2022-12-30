@@ -14,8 +14,10 @@ import {routerAuth} from "./routes/auth.js";
 import mongoose from 'mongoose';
 import {varMiddleware} from "./middleware/variables.js";
 import {userMiddleware} from "./middleware/user.js";
+import * as keys from './keys/index.js';
 
-const MONGODB_URI = 'mongodb://localhost:27017/shop'
+
+//const MONGODB_URI = 'mongodb://localhost:27017/shop'
 const app = express()
 const __dirname = path.resolve()
 const MongoStore = connectMongo(session)
@@ -33,7 +35,7 @@ defaultLayout: 'main', //название главного файла в пап�
 
 const store = new MongoStore({
 
-    uri: MONGODB_URI,
+    uri: keys.MONGODB_URI,
     collection: 'sessions'
 })
 
@@ -59,7 +61,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({extended: true}))
 
 app.use(session({
-    secret: 'some secret value',
+    secret: keys.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: store,
@@ -81,7 +83,7 @@ const PORT = process.env.PORT || 3000
 
 async function start () {
         try {
-            await  mongoose.connect(MONGODB_URI, {useNewUrlParser: true})
+            await  mongoose.connect(keys.MONGODB_URI, {useNewUrlParser: true})
             // const candidate = await User.findOne()
             // if (!candidate) {
             //     const user = new User({
