@@ -10,6 +10,8 @@ const userSchema = new Schema ({
         type: String,
         required: true
     },
+    resetTorken: String,
+    resetTokenExp: Date,
      cart: {
         items: [
             {
@@ -50,7 +52,7 @@ userSchema.methods.addToCart = function(course) {
     return this.save()
 }
 
-userSchema.methods.removeFromCart = function(id) {
+userSchema.methods.removeFromCart =  function(id) {
     let items = [...this.cart.items]
     const idx = items.findIndex(c => c.courseId.toString() === id.toString())
     if(items[idx].count === 1) {
@@ -58,9 +60,9 @@ userSchema.methods.removeFromCart = function(id) {
     } else {
         items[idx].count--
     }
-    this.cart = {items}
+     this.cart =  {items}
 
-      return this.save()
+      return  this.save()
 }
 userSchema.methods.clearCart = async function () {
     this.cart = {items: []}

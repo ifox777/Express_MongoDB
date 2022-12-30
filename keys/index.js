@@ -1,2 +1,6 @@
  export const MONGODB_URI = 'mongodb://localhost:27017/shop'
  export const SESSION_SECRET = 'some secret value'
+// export const SENDGRID_API_KEY = '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'
+export const EMAIL_FROM = 'AlekseiChebenyuk@yandex.ru'
+ //export const EMAIL_FROM = 'ifox777@mail.ru'
+ export const BASE_URL = 'http://localhost:3000'

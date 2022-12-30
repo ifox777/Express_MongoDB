@@ -5,8 +5,8 @@ import {auth} from "../middleware/auth.js";
 
 export const routerCard = Router()
 
-function mapCartItems(cart) {
-return cart.items.map(c => ({
+ function mapCartItems(cart) {
+ return  cart.items.map(c => ({
     ...c.courseId._doc,
     id: c.courseId.id,
     count: c.count
@@ -28,11 +28,11 @@ routerCard.post('/add', auth, async(req, res) => {
 routerCard.delete('/remove/:id', auth, async (req,res) => {
     await req.user.removeFromCart(req.params.id)
     const user = await req.user.populate('cart.items.courseId')
-    const courses = mapCartItems(user.cart)
+    const courses =  mapCartItems(user.cart)
    const cart =  {
         courses, price: computePrice(courses)
     }
-
+   
     res.status(200).json(cart)
 
 })
@@ -50,6 +50,7 @@ const courses = mapCartItems(user.cart)
         title: 'Корзина',
         isCard:true,
         courses: courses,
-        price: computePrice(courses)
+        price: computePrice(courses),
+
     } )
 })
