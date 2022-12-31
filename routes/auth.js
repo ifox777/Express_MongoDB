@@ -6,6 +6,7 @@ import * as crypto from "crypto";
 import {User} from "../models/user.js";
 //import {SENDGRID_API_KEY} from "../keys/index.js";
 import {regEmail} from "../emails/registration.js";
+import {resetEmail} from "../emails/reset.js";
 import * as buffer from "buffer";
 
 
@@ -123,7 +124,8 @@ routerAuth.post('/reset', async (req, res) =>{
                 candidate.resetToken = token
                 candidate.resetTokenExp = Date.now() + 60 * 60 * 1000
                 await candidate.save()
-                await transporter.sendMail()
+                await transporter.sendMail(resetEmail(candidate.email, token))
+                res.redirect('/auth/login')
             } else {
                 req.flash('error', 'Такого email нет')
                 res.redirect('/auth/reset')
