@@ -30,7 +30,14 @@ defaultLayout: 'main', //название главного файла в пап�
         allowProtoMethodsByDefault: true,
     },
 
-    extname: 'hbs'
+    extname: 'hbs',
+    helpers: {ifeq(a, b, options) {
+
+    if (a == b) {
+        return options.fn(this)
+    }
+    return options.inverse(this)
+}}
 })
 
 const store = new MongoStore({

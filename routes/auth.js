@@ -81,7 +81,7 @@ routerAuth.post('/login', async (req, res) => {
 
 routerAuth.post('/register', async(req,res) => {
     try{
-        const {email, password, repeat, name} =  req.body
+        const {email, password, confirm, name} =  req.body
 
         const candidate = await User.findOne( {email})
 
