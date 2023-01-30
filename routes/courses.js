@@ -1,28 +1,30 @@
 import {Router} from "express";
+import {validationResult} from "express-validator";
 import {auth} from "../middleware/auth.js";
 import {Course} from "../models/course.js";
+import {courseValidators} from "../utils/validators.js";
 
 export const routerCourses = Router()
 
 function isOwner(course, req) {
-   return course.userId.toString() === req.user._id.toString()
+    return course.userId.toString() === req.user._id.toString()
 }
 
 
 routerCourses.get('/', async (req, res) =>{
-   try {
-       const courses = await Course.find().populate('userId', 'email name')
-           .select('price title img')
-       //console.log(courses)
-       res.render('courses', {
-           title: 'Курсы',
-           isCourses: true,
-           userId: req.user ? req.user._id.toString() : null,
-           courses
-       })
-   } catch (e) {
+    try {
+        const courses = await Course.find().populate('userId', 'email name')
+            .select('price title img')
+        //console.log(courses)
+        res.render('courses', {
+            title: 'Курсы',
+            isCourses: true,
+            userId: req.user ? req.user._id.toString() : null,
+            courses
+        })
+    } catch (e) {
         console.log(e)
-   }
+    }
 
 
 
@@ -30,8 +32,9 @@ routerCourses.get('/', async (req, res) =>{
 
 routerCourses.get('/:id/edit', auth, async (req, res) => {
     if (!req.query.allow) {
-         return res.redirect('/')
+        return res.redirect('/')
     }
+
 
     try {
         const course = await Course.findById(req.params.id).lean()
@@ -50,12 +53,21 @@ routerCourses.get('/:id/edit', auth, async (req, res) => {
 
 
 })
-routerCourses.post('/edit', auth, async (req, res) => {
+routerCourses.post('/edit', auth, courseValidators, async (req, res) => {
+
+    const errors = validationResult(req)
+    const {id} = req.body
+    if (!errors.isEmpty()) {
+        return res.status(422).redirect(`/courses/${id}/edit?allow=true`)
+
+    }
+
+
     try {
-        const {id} = req.body
+
         delete req.body.id
 
-         const course = await Course.findById(id).lean()
+        const course = await Course.findById(id)
         if(!isOwner(course, req)) {
             return res.redirect('/courses')
         }

@@ -11,9 +11,12 @@ import {routerAdd} from "./routes/add.js";
 import {routerCard} from "./routes/card.js";
 import {routerOrders} from "./routes/orders.js";
 import {routerAuth} from "./routes/auth.js";
+import{routerProfile} from "./routes/profile.js";
 import mongoose from 'mongoose';
 import {varMiddleware} from "./middleware/variables.js";
 import {userMiddleware} from "./middleware/user.js";
+import {errorHandler} from "./middleware/error.js";
+import {fileMiddleware} from "./middleware/file.js";
 import * as keys from './keys/index.js';
 
 
@@ -65,6 +68,8 @@ app.set('views', 'views')
 // обозначаем папку для добваления CSS
 app.use(express.static(path.join(__dirname, 'public')))
 //чтобы при вводе значений в форму и отправку ее получали объект
+app.use('/images', express.static( path.join(__dirname, 'images')))
+//для картинок тоже папку надо сделать статичной
 app.use(express.urlencoded({extended: true}))
 
 app.use(session({
@@ -73,6 +78,7 @@ app.use(session({
     saveUninitialized: false,
     store: store,
 }),)
+app.use(fileMiddleware.single('avatar'))
 app.use(csrf())
 app.use(flash())
 app.use(varMiddleware)
@@ -85,6 +91,9 @@ app.use('/courses',routerCourses) //инициализируем вывод ст
 app.use('/card', routerCard)  //инициализируем вывод старницы коррзины
 app.use('/orders', routerOrders) //инициализируем вывод старницы заказов
 app.use('/auth', routerAuth)  //инициализируем вывод старницы авторизации
+app.use('/profile', routerProfile) //инизиализируем вывод страницы профиля
+
+app.use(errorHandler )
 
 const PORT = process.env.PORT || 3000
 
